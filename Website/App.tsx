@@ -11,7 +11,7 @@ import { Asset, GeneratedMockup, AppView, LoadingState, PlacedLayer } from './ty
 import { useApiKey } from './hooks/useApiKey';
 import ApiKeyDialog from './components/ApiKeyDialog';
 
-// --- Intro Animation Component ---
+
 
 
 
@@ -37,12 +37,12 @@ const NavButton = ({ icon, label, active, onClick, number }: { icon: React.React
 
 const WorkflowStepper = ({ currentView, onViewChange }: { currentView: AppView, onViewChange: (view: AppView) => void }) => {
   const steps = [
-    { id: 'assets', label: 'Upload Assets', number: 1 },
-    { id: 'studio', label: 'Design Mockup', number: 2 },
-    { id: 'gallery', label: 'Download Result', number: 3 },
+    { id: 'upload', label: 'Upload Files', number: 1 },
+    { id: 'notes', label: 'Note Gallery', number: 2 },
+    { id: 'device', label: 'Manage StudyPod Device', number: 3 },
   ];
 
-  const viewOrder = ['assets', 'studio', 'gallery'];
+  const viewOrder = ['upload', 'notes', 'device'];
   const currentIndex = viewOrder.indexOf(currentView);
   const progress = Math.max(0, (currentIndex / (steps.length - 1)) * 100);
 
@@ -230,7 +230,7 @@ const AssetSection = ({
 // --- App Component ---
 
 export default function App() {
-  const [showIntro, setShowIntro] = useState(true);
+
   const [view, setView] = useState<AppView>('dashboard');
   const [assets, setAssets] = useState<Asset[]>([]);
   const [generatedMockups, setGeneratedMockups] = useState<GeneratedMockup[]>([]);
@@ -277,13 +277,7 @@ export default function App() {
   const [draggedItem, setDraggedItem] = useState<{ uid: string, startX: number, startY: number, initX: number, initY: number } | null>(null);
 
   // Demo assets on load
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowIntro(false);
-    }, 9000);
-    return () => clearTimeout(timer);
-  }, []);
-
+ 
   // -- LOGO PLACEMENT HANDLERS --
 
   const addLogoToCanvas = (assetId: string) => {
@@ -455,13 +449,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans flex overflow-hidden relative">
       
-      {/* API Key Dialog */}
-      {showApiKeyDialog && (
-        <ApiKeyDialog onContinue={handleApiKeyDialogContinue} />
-      )}
-
+    
       {/* Sidebar Navigation (Desktop) */}
-      <aside className="w-64 border-r border-zinc-800 bg-zinc-950/50 hidden md:flex flex-col">
+      <aside className="w-70 border-r border-zinc-800 bg-zinc-950/50 hidden md:flex flex-col">
         <div className="h-16 border-b border-zinc-800 flex items-center px-6">
           <Package className="text-indigo-500 mr-2" />
           <span className="font-bold text-lg tracking-tight">SKU FOUNDRY</span>
@@ -476,32 +466,25 @@ export default function App() {
           />
           <NavButton 
             icon={<Box size={18} />} 
-            label="Assets" 
-            active={view === 'assets'} 
-            number={1}
-            onClick={() => setView('assets')} 
+            label="Upload Files" 
+            active={view === 'upload'} 
+            onClick={() => setView('upload')} 
           />
           <NavButton 
             icon={<Wand2 size={18} />} 
-            label="Studio" 
-            active={view === 'studio'} 
-            number={2}
-            onClick={() => setView('studio')} 
+            label="Note Gallery" 
+            active={view === 'notes'} 
+            onClick={() => setView('notes')} 
           />
           <NavButton 
             icon={<ImageIcon size={18} />} 
-            label="Gallery" 
-            active={view === 'gallery'} 
-            number={3}
-            onClick={() => setView('gallery')} 
+            label="Manage StudyPod Device" 
+            active={view === 'device'} 
+            onClick={() => setView('device')} 
           />
         </div>
 
-        <div className="p-4 border-t border-zinc-800">
-          <div className="p-4 rounded-lg bg-zinc-900/50 border border-zinc-800 text-center">
-             <Button size="sm" variant="outline" className="w-full text-xs">Documentation</Button>
-          </div>
-        </div>
+       
       </aside>
 
       {/* Mobile Header */}
@@ -527,24 +510,24 @@ export default function App() {
             />
             <NavButton 
               icon={<Box size={18} />} 
-              label="Assets" 
-              active={view === 'assets'} 
+              label="Upload Files" 
+              active={view === 'upload'} 
               number={1}
-              onClick={() => { setView('assets'); setIsMobileMenuOpen(false); }} 
+              onClick={() => { setView('upload'); setIsMobileMenuOpen(false); }} 
             />
             <NavButton 
               icon={<Wand2 size={18} />} 
-              label="Studio" 
-              active={view === 'studio'} 
+              label="Note Gallery" 
+              active={view === 'notes'} 
               number={2}
-              onClick={() => { setView('studio'); setIsMobileMenuOpen(false); }} 
+              onClick={() => { setView('notes'); setIsMobileMenuOpen(false); }} 
             />
             <NavButton 
               icon={<ImageIcon size={18} />} 
-              label="Gallery" 
-              active={view === 'gallery'} 
+              label="Manage StudyPod Device" 
+              active={view === 'device'} 
               number={3}
-              onClick={() => { setView('gallery'); setIsMobileMenuOpen(false); }} 
+              onClick={() => { setView('device'); setIsMobileMenuOpen(false); }} 
             />
           </div>
           
@@ -653,16 +636,16 @@ export default function App() {
               </div>
            )}
 
-           {/* --- ASSETS VIEW --- */}
-           {view === 'assets' && (
+           {/* --- UPLOAD VIEW --- */}
+           {view === 'upload' && (
               <div className="animate-fade-in">
                 <WorkflowStepper currentView="assets" onViewChange={setView} />
                 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
                   {/* Products Section */}
                   <AssetSection 
-                    title="Products" 
-                    icon={<Box size={20} />}
+                    title="Upload Files" 
+                    icon={<Box size={20} />} // SET ICON FOR "Upload Files"
                     type="product"
                     assets={assets.filter(a => a.type === 'product')}
                     onAdd={(a) => setAssets(prev => [...prev, a])}
@@ -672,16 +655,7 @@ export default function App() {
                   />
 
                   {/* Logos Section */}
-                  <AssetSection 
-                    title="Logos & Graphics" 
-                    icon={<Layers size={20} />}
-                    type="logo"
-                    assets={assets.filter(a => a.type === 'logo')}
-                    onAdd={(a) => setAssets(prev => [...prev, a])}
-                    onRemove={(id) => setAssets(prev => prev.filter(a => a.id !== id))}
-                    validateApiKey={validateApiKey}
-                    onApiError={handleApiError}
-                  />
+                  
                 </div>
 
                 <div className="mt-8 flex justify-end">
